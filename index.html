@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Pharos Faucet</title>
+<style>
+body { font-family: sans-serif; background: #1f1f2e; color: #fff; display:flex; justify-content:center; align-items:center; height:100vh; }
+.card { background: #2c2c3e; padding: 2rem; border-radius: 1rem; text-align:center; width:100%; max-width:400px; }
+input { padding: 0.5rem; width:100%; margin-top:1rem; border-radius:0.5rem; border:none; }
+button { margin-top:1rem; padding:0.5rem 1rem; border:none; border-radius:0.5rem; background:#4f46e5; color:#fff; cursor:pointer; }
+#status { margin-top:1rem; min-height:1.2em; }
+</style>
+</head>
+<body>
+<div class="card">
+<h1>Pharos Faucet</h1>
+<input id="address" placeholder="Enter your wallet address"/>
+<button id="claim">Claim PHRS</button>
+<div id="status"></div>
+</div>
+
+<script>
+const claimBtn = document.getElementById("claim");
+const status = document.getElementById("status");
+
+claimBtn.onclick = async () => {
+  const address = document.getElementById("address").value;
+  status.innerText = "Processing...";
+  try {
+    const res = await fetch("http://109.172.94.150:3000/claim", { // IP سرور تو
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({address})
+    });
+    const data = await res.json();
+    if (data.success) {
+      status.innerText = "✅ Claim successful! Tx: " + data.txHash;
+    } else {
+      status.innerText = "❌ Error: " + data.error;
+    }
+  } catch(err) {
+    status.innerText = "❌ Request failed: " + err;
+  }
+};
+</script>
+</body>
+</html>
